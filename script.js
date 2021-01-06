@@ -94,6 +94,11 @@ var connection = mysql.createConnection({
         var sql = "INSERT INTO department SET ?";
         connection.query(sql, {name: answer.start}, function (err, res) {
           if (err) throw err;
+          connection.query("SELECT * FROM department", function (err, res) {
+            if (err) throw err;
+            console.table(res);  
+          })
+          questions();
         })
       })
     }
