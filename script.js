@@ -35,6 +35,22 @@ var connection = mysql.createConnection({
           case 'View Roles':
             viewRoles();
           break;
+
+          case 'Add Department':
+            addDept();
+          break;
+
+          case 'Add Employee':
+            addEmployee();
+          break;
+
+          case 'Add Role':
+            addRole();
+          break;
+
+          case 'Update Employee Roles':
+            updateEmployeeRole();
+          break;
         }
       });
   
@@ -66,5 +82,21 @@ var connection = mysql.createConnection({
           questions();
         })
       };
+
+      function addDept(){
+          inquirer
+            .prompt({
+              name: "start",
+              type: "input",
+              message: "What department would you like to add?",
+            })
+            .then(function(answer) {
+        var sql = "INSERT INTO department SET ?";
+        connection.query(sql, {name: answer.start}, function (err, res) {
+          if (err) throw err;
+        })
+      })
+    }
+        
 
   // connection.end();
