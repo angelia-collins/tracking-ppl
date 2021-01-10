@@ -121,12 +121,13 @@ function addEmployee() {
     {
       name: "title",
       type: "list",
-      message: "What is their job title?",
-      choices: ['Construction Worker', 'Cheese Maker', 'Baker'],
+      message: "What is their job title? 1.Baker, 2.Cheese Maker, 3.Chef",
+      choices: [1, 2, 3],
     }])
     .then(function (answer) {
       var sql = "INSERT INTO employee SET ?";
-      connection.query(sql, { first_name: answer.first, last_name: answer.last }, function (err, res) {
+      // var jobTitle = indexOf(answer.title) +1;
+      connection.query(sql, { first_name: answer.first, last_name: answer.last, role_id: answer.title }, function (err, res) {
         if (err) throw err;
         connection.query("SELECT * FROM employee", function (err, res) {
           if (err) throw err;
