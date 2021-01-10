@@ -101,7 +101,38 @@ function addDept() {
         questions();
       })
     })
-}
+};
+
+function addEmployee() {
+  inquirer
+    .prompt({
+      name: "first",
+      type: "input",
+      message: "Employee First Name?",
+    },
+    {
+      name: "last",
+      type: "input",
+      message: "Employee Last Name?",
+    },
+    {
+      name: "title",
+      type: "list",
+      message: "What is their job title?",
+      choices: ['Construction Worker', 'Cheese Maker', 'Baker'],
+    })
+    .then(function (answer) {
+      var sql = "INSERT INTO employee SET ?";
+      connection.query(sql, { first_name: answer.first, last_name: answer.last }, function (err, res) {
+        if (err) throw err;
+        connection.query("SELECT * FROM employee", function (err, res) {
+          if (err) throw err;
+          console.table(res);
+        })
+        questions();
+      })
+    })
+};
 
 
-  // connection.end();
+
