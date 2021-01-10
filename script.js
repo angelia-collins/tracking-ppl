@@ -12,7 +12,11 @@ var connection = mysql.createConnection({
   database: "employeeDB"
 });
 
-connection.connect();
+connection.connect(function(err) {
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId + "\n");
+  questions();
+});
 
 function questions() {
   inquirer
@@ -55,8 +59,6 @@ function questions() {
     });
 
 }
-
-questions();
 
 function viewDept() {
   connection.query("SELECT * FROM department", function (err, res) {
@@ -105,7 +107,8 @@ function addDept() {
 
 function addEmployee() {
   inquirer
-    .prompt({
+    .prompt([
+      {
       name: "first",
       type: "input",
       message: "Employee First Name?",
@@ -120,7 +123,7 @@ function addEmployee() {
       type: "list",
       message: "What is their job title?",
       choices: ['Construction Worker', 'Cheese Maker', 'Baker'],
-    })
+    }])
     .then(function (answer) {
       var sql = "INSERT INTO employee SET ?";
       connection.query(sql, { first_name: answer.first, last_name: answer.last }, function (err, res) {
