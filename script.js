@@ -221,3 +221,35 @@ function addRole() {
     })
 };
 
+
+function updateEmployeeRole(){
+  inquirer
+  .prompt([
+    {
+      name: "name",
+      type: "list",
+      message: "Which employee's role do you want to update?",
+      choices: managerStatus()
+    },
+    {
+      name: "payment",
+      type: "list",
+      message: "What would you like to update their role to?",
+      choices: getRole()
+    },
+  ])
+  .then(function (answer) {
+    const role = (answer.payment).split(".")[0];
+    const name = (answer.name).split(".")[0];
+    var sql = "UPDATE employee SET ? WHERE ? ";
+    connection.query(sql, { role_id: role, manager_id: name }, function (err, res) {
+      if (err) throw err;
+      connection.query("SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee e LEFT JOIN role r ON e.role_id = r.id LEFT JOIN department d ON d.id = r.department_id LEFT JOIN employee m ON m.id = e.manager_id", function (err, res) {
+        if (err) throw err;
+        console.log("\n");
+        console.table(res);
+      })
+      questions();
+    })
+  })
+};
