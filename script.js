@@ -174,5 +174,31 @@ function addEmployee() {
     })
 };
 
-
+function addRole() {
+  inquirer
+  .prompt([
+    {
+      name: "roleName",
+      type: "input",
+      message: "What is the name of the role?",
+    },
+    {
+      name: "payment",
+      type: "input",
+      message: "What is the salary for this role?",
+    },
+  ])
+    .then(function (answer) {
+      var sql = "INSERT INTO role SET ?";
+      connection.query(sql, { title: answer.roleName, salary: answer.payment }, function (err, res) {
+        if (err) throw err;
+        connection.query("SELECT * FROM role", function (err, res) {
+          if (err) throw err;
+          console.log("\n");
+          console.table(res);
+        })
+        questions();
+      })
+    })
+};
 
