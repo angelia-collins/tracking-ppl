@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
   database: "employeeDB"
 });
 
-connection.connect(function(err) {
+connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
   questions();
@@ -98,6 +98,7 @@ function addDept() {
         if (err) throw err;
         connection.query("SELECT * FROM department", function (err, res) {
           if (err) throw err;
+          console.log("\n");
           console.table(res);
         })
         questions();
@@ -105,32 +106,50 @@ function addDept() {
     })
 };
 
+
+let roleTitle = [];
+
+function getRole() {
+  connection.query("SELECT * FROM role", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    for (let i = 0; i < res.length; i++ ){
+      roleTitle.push(res[i].id + ". " + res[i].title);
+    }
+    console.log(res)
+  });
+  return roleTitle;
+}
+
 function addEmployee() {
   inquirer
     .prompt([
       {
-      name: "first",
-      type: "input",
-      message: "Employee First Name?",
-    },
-    {
-      name: "last",
-      type: "input",
-      message: "Employee Last Name?",
-    },
-    {
-      name: "title",
-      type: "list",
-      message: "What is their job title? 1.Baker, 2.Cheese Maker, 3.Chef",
-      choices: [1, 2, 3],
-    }])
+        name: "first",
+        type: "input",
+        message: "Employee First Name?",
+      },
+      {
+        name: "last",
+        type: "input",
+        message: "Employee Last Name?",
+      },
+      {
+        name: "title",
+        type: "list",
+        message: "What is their job title? 1.Baker, 2.Cheese Maker, 3.Chef",
+        choices: getRole()
+      }
+    ])
     .then(function (answer) {
+      const roleId = (answer.title).split(".")[0];
       var sql = "INSERT INTO employee SET ?";
       // var jobTitle = indexOf(answer.title) +1;
-      connection.query(sql, { first_name: answer.first, last_name: answer.last, role_id: answer.title }, function (err, res) {
+      connection.query(sql, { first_name: answer.first, last_name: answer.last, role_id: roleId }, function (err, res) {
         if (err) throw err;
         connection.query("SELECT * FROM employee", function (err, res) {
           if (err) throw err;
+          console.log("\n");
           console.table(res);
         })
         questions();

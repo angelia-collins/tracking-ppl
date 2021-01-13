@@ -10,6 +10,7 @@ role_id INT NULL,
 manager_id INT NULL,
 PRIMARY KEY(id),
 FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
+FOREIGN KEY (role_id) REFERENCES employee(id)
 );
 
 CREATE TABLE role (
@@ -33,6 +34,9 @@ VALUES ("Willis", "Jones", 1, 1);
 
 INSERT INTO role (title, salary, department_id)
 VALUES ("construction worker", 9.9, 1);
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("baker", 9.9, 1);
 
 INSERT INTO department (name)
 VALUES ("Construction");
