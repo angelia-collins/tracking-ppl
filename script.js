@@ -69,7 +69,7 @@ function viewDept() {
 };
 
 function viewEmployees() {
-  var sql = "SELECT employee.first_name, employee.last_name, role.title FROM role INNER JOIN employee ON employee.role_id = role.id";
+  var sql = "SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee e LEFT JOIN role r ON e.role_id = r.id LEFT JOIN department d ON d.id = r.department_id LEFT JOIN employee m ON m.id = e.manager_id";
   connection.query(sql, function (err, res) {
     if (err) throw err;
     console.table(res);
@@ -164,7 +164,7 @@ function addEmployee() {
       var sql = "INSERT INTO employee SET ?";
       connection.query(sql, { first_name: answer.first, last_name: answer.last, role_id: roleId, manager_id: managerId }, function (err, res) {
         if (err) throw err;
-        connection.query("SELECT * FROM employee", function (err, res) {
+        connection.query("SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee e LEFT JOIN role r ON e.role_id = r.id LEFT JOIN department d ON d.id = r.department_id LEFT JOIN employee m ON m.id = e.manager_id", function (err, res) {
           if (err) throw err;
           console.log("\n");
           console.table(res);
