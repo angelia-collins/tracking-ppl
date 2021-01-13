@@ -174,6 +174,18 @@ function addEmployee() {
     })
 };
 
+
+let deptName = [];
+function whichDept(){
+  connection.query("SELECT * FROM department", function (err, res) {
+    if (err) throw err;
+    for (let i = 0; i < res.length; i++ ){
+      deptName.push(res[i].id + ". " + res[i].name);
+    }
+  });
+  return deptName;
+};
+
 function addRole() {
   inquirer
   .prompt([
@@ -187,10 +199,17 @@ function addRole() {
       type: "input",
       message: "What is the salary for this role?",
     },
+    {
+      name: "dept",
+      type: "list",
+      message: "Which department is this in?",
+      choices: whichDept()
+    }
   ])
     .then(function (answer) {
+      const deptID = (answer.dept).split(".")[0];
       var sql = "INSERT INTO role SET ?";
-      connection.query(sql, { title: answer.roleName, salary: answer.payment }, function (err, res) {
+      connection.query(sql, { title: answer.roleName, salary: answer.payment, department_id: deptID }, function (err, res) {
         if (err) throw err;
         connection.query("SELECT * FROM role", function (err, res) {
           if (err) throw err;
