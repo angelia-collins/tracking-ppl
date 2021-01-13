@@ -160,9 +160,9 @@ function addEmployee() {
     ])
     .then(function (answer) {
       const roleId = (answer.title).split(".")[0];
-      // const managerId = answer.managerStatus;
+      const managerId = (answer.managerStatus).split(".")[0];
       var sql = "INSERT INTO employee SET ?";
-      connection.query(sql, { first_name: answer.first, last_name: answer.last, role_id: roleId }, function (err, res) {
+      connection.query(sql, { first_name: answer.first, last_name: answer.last, role_id: roleId, manager_id: managerId }, function (err, res) {
         if (err) throw err;
         connection.query("SELECT * FROM employee", function (err, res) {
           if (err) throw err;
