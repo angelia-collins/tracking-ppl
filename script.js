@@ -112,14 +112,25 @@ let roleTitle = [];
 function getRole() {
   connection.query("SELECT * FROM role", function (err, res) {
     if (err) throw err;
-    console.table(res);
+    // console.table(res);
     for (let i = 0; i < res.length; i++ ){
       roleTitle.push(res[i].id + ". " + res[i].title);
     }
-    console.log(res)
+    // console.log(res)
   });
   return roleTitle;
-}
+};
+
+let manager = [];
+function managerStatus() {
+  connection.query("SELECT * FROM employee", function (err, res) {
+    if (err) throw err;
+    for (let i = 0; i < res.length; i++ ){
+      manager.push(res[i].id + ". " + res[i].first_name + " " + res[i].last_name);
+    }
+  });
+  return manager;
+};
 
 function addEmployee() {
   inquirer
@@ -137,14 +148,20 @@ function addEmployee() {
       {
         name: "title",
         type: "list",
-        message: "What is their job title? 1.Baker, 2.Cheese Maker, 3.Chef",
+        message: "What is their job title?",
         choices: getRole()
+      },
+      {
+        name: "managerStatus",
+        type: "list",
+        message: "Who is their manager?",
+        choices: managerStatus()
       }
     ])
     .then(function (answer) {
       const roleId = (answer.title).split(".")[0];
+      // const managerId = answer.managerStatus;
       var sql = "INSERT INTO employee SET ?";
-      // var jobTitle = indexOf(answer.title) +1;
       connection.query(sql, { first_name: answer.first, last_name: answer.last, role_id: roleId }, function (err, res) {
         if (err) throw err;
         connection.query("SELECT * FROM employee", function (err, res) {
